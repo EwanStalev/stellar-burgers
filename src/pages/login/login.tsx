@@ -1,12 +1,15 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
 import { useDispatch } from '../../services/store';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../services/reducers/authReducer';
+import { setCookie } from '../../utils/cookie';
 
 export const Login: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const location = useLocation();
+  const fromPath = location.state?.from;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,7 +23,11 @@ export const Login: FC = () => {
       })
     )
       .unwrap()
-      .then(() => navigate('/'));
+      .then((res) => {
+        localStorage.setItem('refreshToken', res.refreshToken);
+        setCookie('accessToken', res.accessToken);
+        navigate(fromPath ? fromPath : '/');
+      });
   };
   return (
     <LoginUI

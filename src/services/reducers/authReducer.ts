@@ -1,25 +1,14 @@
 import {
-  getIngredientsApi,
   getUserApi,
   loginUserApi,
   logoutApi,
   registerUserApi,
-  TIngredientsResponse,
   TLoginData,
   TRegisterData,
   updateUserApi
 } from '@api';
-import { IngredientDetails } from '@components';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  TConstructorIngredient,
-  TIngredient,
-  TOrder,
-  TUser
-} from '@utils-types';
-import { error } from 'console';
-import { setCookie } from '../../utils/cookie';
-import { v4 } from 'uuid';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { TUser } from '@utils-types';
 
 interface IinitialState {
   isAuth: boolean;
@@ -66,8 +55,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.user = action.payload.user;
-      localStorage.setItem('refreshToken', action.payload.refreshToken);
-      setCookie('accessToken', action.payload.accessToken);
+
       state.isAuth = true;
     });
     builder.addCase(registerUser.rejected, (state, action) => {
@@ -85,8 +73,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.user = action.payload.user;
-      localStorage.setItem('refreshToken', action.payload.refreshToken);
-      setCookie('accessToken', action.payload.accessToken);
+
       state.isAuth = true;
     });
     builder.addCase(loginUser.rejected, (state, action) => {

@@ -6,15 +6,22 @@ import {
   clearModalData,
   orderBurger
 } from '../../services/reducers/orderReducer';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
   const { constructorItems, orderRequest, orderModalData } = useSelector(
     (state) => state.order
   );
+  const { isAuth } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const onOrderClick = () => {
+    if (!isAuth) {
+      navigate('/login', { state: { from: window.location.pathname } });
+      return;
+    }
     if (!constructorItems.bun || orderRequest) return;
     dispatch(
       orderBurger([

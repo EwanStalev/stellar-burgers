@@ -3,6 +3,7 @@ import { RegisterUI } from '@ui-pages';
 import { useDispatch } from '../../services/store';
 import { registerUser } from '../../services/reducers/authReducer';
 import { useNavigate } from 'react-router-dom';
+import { setCookie } from '../../utils/cookie';
 
 export const Register: FC = () => {
   const [userName, setUserName] = useState('');
@@ -22,7 +23,11 @@ export const Register: FC = () => {
       })
     )
       .unwrap()
-      .then(() => navigate('/'));
+      .then((res) => {
+        localStorage.setItem('refreshToken', res.refreshToken);
+        setCookie('accessToken', res.accessToken);
+        navigate('/');
+      });
   };
 
   return (
