@@ -29,23 +29,59 @@ describe('Burger Constructor', () => {
     cy.get(SELECTORS.INGREDIENT_MAIN).should('exist');
   });
 
-  it('Должен добавлять ингредиенты в конструктор через кнопку', () => {
+  it('Должен корректно добавлять выбранные ингредиенты в конструктор', () => {
+    //  Проверяем первую булку
     cy.get(SELECTORS.INGREDIENT_BUN)
       .first()
-      .within(() => {
-        cy.get('button').click();
+      .find('.text_type_main-default') // класс с названием в списке ингредиентов
+      .invoke('text')
+      .then((bunName) => {
+        const cleanBunName = bunName.trim();
+
+        // Проверяем, что булки пока нет
+        cy.get(SELECTORS.CONSTRUCTOR_BUN_TOP).should('not.exist');
+        cy.get(SELECTORS.CONSTRUCTOR_BUN_BOTTOM).should('not.exist');
+
+        // Добавляем булку
+        cy.get(SELECTORS.INGREDIENT_BUN)
+          .first()
+          .within(() => {
+            cy.get('button').click();
+          });
+
+        // Проверяем, что появилась именно нужная булка
+        cy.get(`${SELECTORS.CONSTRUCTOR_BUN_TOP} .constructor-element__text`)
+          .should('exist')
+          .and('contain', cleanBunName);
+
+        cy.get(`${SELECTORS.CONSTRUCTOR_BUN_BOTTOM} .constructor-element__text`)
+          .should('exist')
+          .and('contain', cleanBunName);
       });
 
-    cy.get(SELECTORS.CONSTRUCTOR_BUN_TOP).should('exist');
-    cy.get(SELECTORS.CONSTRUCTOR_BUN_BOTTOM).should('exist');
-
+    // Проверяем первую начинку
     cy.get(SELECTORS.INGREDIENT_MAIN)
       .first()
-      .within(() => {
-        cy.get('button').click();
-      });
+      .find('.text_type_main-default')
+      .invoke('text')
+      .then((ingredientName) => {
+        const cleanIngredientName = ingredientName.trim();
 
-    cy.get(SELECTORS.CONSTRUCTOR_INGREDIENT).should('have.length', 1);
+        // Убедимся, что начинки нет
+        cy.get(SELECTORS.CONSTRUCTOR_INGREDIENT).should('not.exist');
+
+        // Добавляем
+        cy.get(SELECTORS.INGREDIENT_MAIN)
+          .first()
+          .within(() => {
+            cy.get('button').click();
+          });
+
+        // Ждём появления
+        cy.get(SELECTORS.CONSTRUCTOR_INGREDIENT, { timeout: 10000 })
+          .should('exist')
+          .and('contain', cleanIngredientName);
+      });
   });
 
   it('Должен открывать и закрывать модальное окно ингредиента', () => {
@@ -67,6 +103,11 @@ describe('Burger Constructor', () => {
       // Ждём, когда подгрузятся ингредиенты
       cy.intercept('GET', '**/ingredients').as('getIngredients');
       cy.wait('@getIngredients');
+    });
+
+    afterEach(() => {
+      cy.clearCookies();
+      cy.clearLocalStorage();
     });
 
     it('Должен перенаправлять на страницу логина при неавторизованном пользователе', () => {
