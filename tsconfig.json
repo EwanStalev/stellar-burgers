@@ -16,16 +16,16 @@
     "noEmit": false,
     "jsx": "react-jsx",
     "types": ["node", "jest"],
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
-      "@pages": ["src/pages"],
-      "@components": ["src/components"],
-      "@ui": ["src/components/ui"],
-      "@ui-pages": ["src/components/ui/pages"],
-      "@utils-types": ["src/utils/types"],
-      "@api": ["src/utils/burger-api.ts"],
-      "@slices": ["src/services/slices"],
-      "@selectors": ["src/services/selectors"]
+      "@pages": ["pages"],
+      "@components": ["components"],
+      "@ui": ["components/ui"],
+      "@ui-pages": ["components/ui/pages"],
+      "@utils-types": ["utils/types"],
+      "@api": ["utils/burger-api.ts"],
+      "@slices": ["services/slices"],
+      "@selectors": ["services/selectors"]
     }
   },
   "include": ["src"]
