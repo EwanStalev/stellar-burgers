@@ -12,7 +12,8 @@ const SELECTORS = {
   INGREDIENT_DETAILS: '[data-testid="ingredient-details"]',
   INGREDIENT_DETAILS_NAME: '[data-testid="ingredient-details-name"]',
   ORDER_DETAILS: '[data-testid="order-details"]',
-  ORDER_NUMBER: '[data-testid="order-number"]'
+  ORDER_NUMBER: '[data-testid="order-number"]',
+  BURGER_CONSTRUCTOR: '[data-testid="burger-constructor"]'
 };
 
 describe('Burger Constructor', () => {
@@ -160,6 +161,14 @@ describe('Burger Constructor', () => {
       // Проверяем модальное окно заказа
       cy.get(SELECTORS.ORDER_DETAILS).should('be.visible');
       cy.get(SELECTORS.ORDER_NUMBER).should('contain', '93309');
+      cy.get(SELECTORS.MODAL_CLOSE).click();
+      cy.get(SELECTORS.BURGER_CONSTRUCTOR).within(() => {
+        // Проверим, что нет добавленных ингредиентов
+
+        // (опционально) Проверим, что отображается placeholder
+        cy.contains('Выберите булки').should('exist');
+        cy.contains('Выберите начинку').should('exist');
+      });
     });
   });
 });
